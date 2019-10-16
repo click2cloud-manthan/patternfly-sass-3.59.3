@@ -1,0 +1,1281 @@
+//
+//  Vertical navigation
+// --------------------------------------------------
+//
+// Basic Required Layout for Vertical Navigation
+//
+// .navbar navbar-pf-vertical
+//   .navbar-header
+//   .collapse navbar-collapse   <-- necessary for collapsing vertical nav and mobile
+// .nav-pf-vertical [.nav-pf-vertical-callapsible-menus] [.nav-pf-persistent-secondary] [.hidden-icons-pf]
+//   .list-group
+//     .list-group-item [.active] [.secondary-nav-item-pf]
+//       a
+//         [primary icon] <-- Not shown if .hidden-icons-pf above
+//         .list-group-item-value
+//       .nav-pf-secondary-nav  <-- if .secondary-nav-item-pf above
+//         .nav-item-pf-header
+//           .secondary-collapse-toggle-pf data-toggle="collapse-secondary-nav"
+//         .list-group
+//           .list-group-item [.active] [tertiary-nav-item-pf]
+//             a
+//              .list-group-item-value
+//            .nav-pf-tertiary-nav  <-- if .tertiary-nav-item-pf above
+//              .nav-item-pf-header
+//                .tertiary-collapse-toggle-pf data-toggle="collapse-tertiary-nav"
+//              .list-group
+//                .list-group-item [.active] [tertiary-nav-item-pf]
+//                  a
+//                    .list-group-item-value
+//
+// .container-pf-nav-pf-vertical [.nav-pf-persistent-secondary] [.hidden-icons-pf]
+//
+
+.nav-pf-vertical {
+  background: $nav-pf-vertical-bg-color;
+  box-shadow: 1px 0px 6px -1px #ccc;   // Changes made by C2C CloudBrain Team
+  bottom: 0;
+  left: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: fixed;
+  top: $navbar-pf-height;
+  //width: $nav-pf-vertical-width;		// Changes made by C2C CloudBrain Team
+  z-index: $zindex-navbar-fixed;
+  .layout-pf-fixed-with-footer & {
+    bottom: $footer-pf-height;
+  }
+  .ie9.layout-pf-fixed & {
+    box-sizing: content-box; // IE9 incorrectly sizes the width if using padding-box
+  }
+   &.hidden.show-mobile-nav {  // Mobile mode open
+    box-shadow: 0 0 3px rgba($color-pf-black, (15/100));
+    display: block !important;
+  }
+  &.hide-nav-pf {  // Used to hide navigation initially to avoid startup flicker
+    visibility: hidden !important;
+  }
+  .list-group {
+    border-top: 0;
+    margin-bottom: 0;
+  }
+  .list-group-item {
+    background-color: transparent;
+    //border-color: $nav-pf-vertical-item-border-color;		// Changes made by C2C CloudBrain Team
+    padding: 0;
+    > a {
+      background-color: transparent;
+      color: #3e466a;				// Changes made by C2C CloudBrain Team
+      cursor: pointer;
+      display: block;
+      font-size: ($font-size-base + 2);
+      font-weight: 600;				// Changes made by C2C CloudBrain Team
+      height: $nav-pf-vertical-link-height;
+      line-height: 26px;
+      padding: $nav-pf-vertical-link-padding;
+      position: relative;
+      white-space: nowrap;
+      width: 100%;					// Changes made by C2C CloudBrain Team
+      // When flexbox is supported nav item names take up all available space
+      @supports (display: flex) {
+        display: flex;
+        padding-right: 0;
+      }
+      .fa, .fas, .far, .fab, .fal,
+      .glyphicon,
+      .pficon {
+        color: $nav-pf-vertical-icon-color;
+        float: left;
+        font-size: ($font-size-base + 8);
+        line-height: 26px;
+        margin-right: 10px;
+        text-align: center;
+        width: $nav-pf-vertical-icon-width;
+      }
+      &:hover,
+      &:focus {
+        text-decoration: none;
+      }
+    }
+    &.active > a,
+    &:hover > a,
+    & > a:focus {
+      background-color: $nav-pf-vertical-active-bg-color!important;		// Changes made by C2C CloudBrain Team
+      color: $nav-pf-vertical-active-color!important;					// Changes made by C2C CloudBrain Team
+      font-weight: $nav-pf-vertical-active-font-weight!important;		// Changes made by C2C CloudBrain Team
+      .fa, .fas, .far, .fab, .fal,
+      .glyphicon,
+      .pficon {
+        color: $nav-pf-vertical-active-icon-color;
+      }
+    }
+    &.active {
+      > a:before {
+        background: $nav-pf-vertical-active-before-color;
+        content: " ";
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 3px;
+      }
+      &:hover { // to over-ride default list group setting
+        background-color: transparent;
+										// Changes made by C2C CloudBrain Team
+      }
+    }
+    .list-group-item-value {
+      display: block;
+      line-height: 25px;
+      max-width: 120px;
+      // If flexbox is supported, do not set max-width, take all space with just some right padding
+      // This generates a known issue on IE11:
+      // https://github.com/patternfly/patternfly/pull/810
+      @supports (display: flex) {
+        flex: 1;
+        max-width: none;
+        padding-right: 15px;
+      }
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  .list-group-item-separator {
+    border-top-color: $nav-pf-vertical-item-border-color;
+    border-top-width: 2px;
+  }
+  &.nav-pf-vertical-with-badges {
+    width: $nav-pf-vertical-badges-width;
+    .list-group-item > a {
+      width: $nav-pf-vertical-badges-width;
+    }
+  }
+  h5 {
+    color: $nav-pf-vertical-secondary-color;
+    cursor: default;
+    font-size: ($font-size-base + 1);
+    font-weight: 600;
+    margin: $nav-pf-vertical-secondary-list-header-margin;
+  }
+  &.hidden-icons-pf {
+    > .list-group > .list-group-item { // only the primary menu hides icons
+      > a {
+        .fa, .fas, .far, .fab, .fal,
+        .glyphicon,
+        .pficon {
+          display: none;
+        }
+      }
+    }
+    &.collapsed {
+      display: none;
+    }
+  }
+  .badge-container-pf {
+    position: absolute;
+    right: 15px;
+    top: 20px;
+    // If flexbox is supported, use relative positioning to place to the right of the label
+    // and adjust the top position so that the secondary and tertiary nav items don't need to change
+    @supports (display: flex) {
+      padding-left: 0;
+      padding-right: 15px;
+      position: relative;
+      right: 0;
+      margin-top: -3px;
+      top: 5px;
+    }
+    .badge {
+      background: $nav-pf-vertical-badge-bg-color;
+      color: $nav-pf-vertical-badge-color;
+      float: left;
+      font-size: $font-size-base;
+      font-weight: 700;
+      line-height: $line-height-base;
+      margin: 0;
+      padding: 0 7px;
+      text-align: center;
+      .pficon,
+      .fa, .fas, .far, .fab, .fal {
+        font-size: ($font-size-base + 2);
+        height: 20px;
+        line-height: $line-height-base;
+        margin-right: 3px;
+        margin-top: -1px;
+      }
+    }
+  }
+}
+.nav-pf-vertical-tooltip.tooltip {
+  margin-left: 15px;
+  .tooltip-inner {
+    background-color: $color-pf-white;
+    color: $color-pf-black-900;
+  }
+  .tooltip-arrow {
+    border-bottom-color: $color-pf-white;
+    left: calc(50% - 15px) !important;
+  }
+}
+.hover-secondary-nav-pf {
+ // width: unquote("calc(#{$nav-pf-vertical-width} * 2)");		// Changes made by C2C CloudBrain Team
+  &.nav-pf-vertical-with-badges {
+   // width: unquote("calc(#{$nav-pf-vertical-badges-width} * 2)");		// Changes made by C2C CloudBrain Team
+  }
+}
+.hover-tertiary-nav-pf {
+ // width: unquote("calc(#{$nav-pf-vertical-width} * 3)");		// Changes made by C2C CloudBrain Team
+  &.nav-pf-vertical-with-badges {
+    //width: unquote("calc(#{$nav-pf-vertical-badges-width} * 3)");		// Changes made by C2C CloudBrain Team
+  }
+  .nav-pf-secondary-nav {
+    //width: unquote("calc(#{$nav-pf-vertical-width} * 2)");	// Changes made by C2C CloudBrain Team
+    .collapsed-tertiary-nav-pf {
+      //width: $nav-pf-vertical-width;		// Changes made by C2C CloudBrain Team
+    }
+  }
+  .nav-pf-tertiary-nav {
+    // left: unquote("calc(#{$nav-pf-vertical-width} * 2)");	// Changes made by C2C CloudBrain Team
+  }
+  &.nav-pf-vertical-with-badges {
+    .nav-pf-secondary-nav {
+     // width: unquote("calc(#{$nav-pf-vertical-badges-width} * 2)");	// Changes made by C2C CloudBrain Team
+      .collapsed-tertiary-nav-pf {
+      //  width: $nav-pf-vertical-badges-width;		// Changes made by C2C CloudBrain Team
+      }
+    }
+    .nav-pf-tertiary-nav {
+      //left: unquote("calc(#{$nav-pf-vertical-badges-width} * 2)");		// Changes made by C2C CloudBrain Team
+    }
+  }
+}
+.nav-pf-vertical.collapsed {
+  //width: $nav-pf-vertical-collapsed-width;		// Changes made by C2C CloudBrain Team
+  &.collapsed-secondary-nav-pf { // collapsed state with secondary menu pinned
+    //width: $nav-pf-vertical-width;		// Changes made by C2C CloudBrain Team
+    &.nav-pf-vertical-with-badges {
+      //width: $nav-pf-vertical-badges-width;		// Changes made by C2C CloudBrain Team
+    }
+  }
+  &.collapsed-tertiary-nav-pf { // collapsed state with tertiary menu pinned
+    //width: $nav-pf-vertical-width;		// Changes made by C2C CloudBrain Team
+    &.nav-pf-vertical-with-badges {
+      //width: $nav-pf-vertical-badges-width;		// Changes made by C2C CloudBrain Team
+    }
+  }
+  &.hover-secondary-nav-pf {
+    //width: unquote("calc(#{$nav-pf-vertical-collapsed-width} + #{$nav-pf-vertical-width})");		// Changes made by C2C CloudBrain Team
+    &.nav-pf-vertical-with-badges {
+      //width: unquote("calc(#{$nav-pf-vertical-collapsed-width} + #{$nav-pf-vertical-badges-width})");		// Changes made by C2C CloudBrain Team
+    }
+  }
+  &.hover-tertiary-nav-pf {
+    //width: unquote("calc(#{$nav-pf-vertical-collapsed-width} + (#{$nav-pf-vertical-width} * 2))");		// Changes made by C2C CloudBrain Team
+    &.nav-pf-vertical-with-badges {
+      //width: unquote("calc(#{$nav-pf-vertical-collapsed-width} + (#{$nav-pf-vertical-badges-width} * 2))");		// Changes made by C2C CloudBrain Team
+    }
+  }
+}
+.show-mobile-nav {
+  &.show-mobile-secondary {
+    //width: $nav-pf-vertical-width;		// Changes made by C2C CloudBrain Team
+    &.nav-pf-vertical-with-badges {
+      //width: $nav-pf-vertical-badges-width;		// Changes made by C2C CloudBrain Team
+    }
+  }
+  &.show-mobile-tertiary {
+    //width: $nav-pf-vertical-width;		// Changes made by C2C CloudBrain Team
+    &.nav-pf-vertical-with-badges {
+      //width: $nav-pf-vertical-badges-width;		// Changes made by C2C CloudBrain Team
+    }
+  }
+  
+													// Changes made by C2C CloudBrain Team, changes start
+  
+  //.mobile-nav-item-pf,						
+  //.mobile-secondary-item-pf {					
+    //.nav-pf-secondary-nav {					
+      //left: 0;								
+      //opacity: 1;								
+      //visibility: visible;					
+      //z-index: ($zindex-navbar-fixed + 4);	
+    //}											
+    //> .nav-pf-tertiary-nav {					
+      //left: 0;								
+      //opacity: 1;								
+      //visibility: visible;					
+      //z-index: ($zindex-navbar-fixed + 8);	
+    //}											
+  //}											
+  //.nav-pf-secondary-nav {					
+    //left: 0;									
+    //.secondary-nav-item-pf:hover & {			
+      //opacity: 0;								
+     // visibility: hidden;						
+    //}											
+  //}											
+  //.tertiary-nav-item-pf:hover {				
+    //.nav-pf-tertiary-nav {
+      //opacity: 0;
+      //visibility: hidden;
+   // }
+  //}
+  //.tertiary-nav-item-pf.mobile-nav-item-pf:hover {
+    //.nav-pf-tertiary-nav {
+      //opacity: 1;
+      //visibility: visible;
+   // }
+  //}
+  
+													// Changes made by C2C CloudBrain Team, changes end
+  
+}
+.secondary-nav-item-pf {
+  > a {
+    cursor: pointer;		// Changes made by C2C CloudBrain Team
+    &:after {
+      //color: $nav-pf-vertical-secondary-indicator-color;		// Changes made by C2C CloudBrain Team
+      content: $fa-var-angle-right;
+      display: block;
+      font-family: "FontAwesome";
+      line-height: 30px;
+      font-size: 17px;				// Changes made by C2C CloudBrain Team
+      padding: $nav-pf-vertical-secondary-indicator-padding;
+      position: absolute;
+      right: 20px;
+      top: 0;
+    }
+    .list-group-item-value {
+      // If flex box is supported add some padding to account for the submenu indicator
+      @supports (display: flex) {
+        padding-right: 35px;
+      }
+    }
+  }
+  &.active,
+  &:hover {
+    > a {
+      //width: unquote("calc(#{$nav-pf-vertical-width} + 1px)");		// Changes made by C2C CloudBrain Team
+      z-index: ($zindex-navbar-fixed + 1);
+      &:after {
+        right: 21px;
+      }
+      .collapsed-secondary-nav-pf & {
+        z-index: 0;
+      }
+      .collapsed-tertiary-nav-pf & {
+        z-index: 0;
+      }
+    }
+  }
+  .nav-pf-vertical-with-badges & {
+    &.active,
+    &:hover {
+      > a {
+       // width: unquote("calc(#{$nav-pf-vertical-badges-width} + 1px)");		// Changes made by C2C CloudBrain Team
+      }
+    }
+  }
+}
+.nav-pf-vertical.collapsed-secondary-nav-pf {
+ // width: $nav-pf-vertical-width;				// Changes made by C2C CloudBrain Team
+  &.nav-pf-vertical-with-badges {
+   // width: $nav-pf-vertical-badges-width;			// Changes made by C2C CloudBrain Team
+  }
+  .secondary-nav-item-pf {  // Keep sub-menu indicators below collapsed menu
+    &.active,
+    &.hover {
+      > a {
+        z-index: $zindex-navbar-fixed;
+      }
+    }
+  }
+  &.hover-tertiary-nav-pf {
+    //width: $nav-pf-vertical-width;			// Changes made by C2C CloudBrain Team
+    &.nav-pf-vertical-with-badges {
+      //width: $nav-pf-vertical-badges-width;			// Changes made by C2C CloudBrain Team
+    }
+  }
+  .nav-pf-secondary-nav {
+    left: 0;
+  }
+  .nav-pf-tertiary-nav {
+    //left: $nav-pf-vertical-width;			// Changes made by C2C CloudBrain Team
+  }
+  &.nav-pf-vertical-with-badges {
+    .nav-pf-tertiary-nav {
+     // left: $nav-pf-vertical-badges-width;			// Changes made by C2C CloudBrain Team
+    }
+  }
+}
+.nav-pf-vertical.collapsed-tertiary-nav-pf {
+  //width: $nav-pf-vertical-width;				// Changes made by C2C CloudBrain Team
+  &.nav-pf-vertical-with-badges {
+    //width: $nav-pf-vertical-badges-width;		// Changes made by C2C CloudBrain Team
+  }
+														// Changes made by C2C CloudBrain Team, changes start
+  //.nav-pf-secondary-nav {
+    //width: $nav-pf-vertical-width;
+    //&.nav-pf-vertical-with-badges {
+      //width: $nav-pf-vertical-badges-width;
+    //}
+  //}
+														// Changes made by C2C CloudBrain Team, changes end
+  // Keep sub-menu indicators below collapsed menu
+  .secondary-nav-item-pf,
+  .tertiary-nav-item-pf {
+    &.active,
+    &.hover {
+      > a {
+        z-index: 0;
+      }
+    }
+  }
+}
+.nav-pf-vertical.nav-pf-persistent-secondary.secondary-visible-pf {  // Persistent secondary nav settings
+  @media (min-width: $screen-lg-min) { // secondary menu only persistent at lg screen
+    //width: unquote("calc(#{$nav-pf-vertical-width} * 2)");		// Changes made by C2C CloudBrain Team
+    &.nav-pf-vertical-with-badges {
+      //width: unquote("calc(#{$nav-pf-vertical-badges-width} * 2)");		// Changes made by C2C CloudBrain Team
+    }
+    &.collapsed-secondary-nav-pf {
+      //width: $nav-pf-vertical-width;			// Changes made by C2C CloudBrain Team
+      &.nav-pf-vertical-with-badges {
+        //width: $nav-pf-vertical-badges-width;		// Changes made by C2C CloudBrain Team
+      }
+      &.hover-tertiary-nav-pf {
+        //width: unquote("calc(#{$nav-pf-vertical-width} * 2)");		// Changes made by C2C CloudBrain Team
+        &.nav-pf-vertical-with-badges {
+          //width: unquote("calc(#{$nav-pf-vertical-badges-width} * 2)");		// Changes made by C2C CloudBrain Team
+        }
+      }
+    }
+    &.collapsed-tertiary-nav-pf {
+      //width: $nav-pf-vertical-width;		// Changes made by C2C CloudBrain Team
+      &.nav-pf-vertical-with-badges {
+        //width: $nav-pf-vertical-badges-width;		// Changes made by C2C CloudBrain Team
+      }
+    }
+    &.collapsed {
+      //width: unquote("calc(#{$nav-pf-vertical-collapsed-width} + #{$nav-pf-vertical-width})");		// Changes made by C2C CloudBrain Team
+      &.collapsed-secondary-nav-pf {
+        //width: $nav-pf-vertical-width;			// Changes made by C2C CloudBrain Team
+        &.nav-pf-vertical-with-badges {
+          //width: $nav-pf-vertical-badges-width;		// Changes made by C2C CloudBrain Team
+        }
+      }
+      &.collapsed-tertiary-nav-pf {
+        //width: $nav-pf-vertical-width;		// Changes made by C2C CloudBrain Team
+        &.nav-pf-vertical-with-badges {
+          //width: $nav-pf-vertical-badges-width;		// Changes made by C2C CloudBrain Team
+        }
+      }
+      &.hover-tertiary-nav-pf {
+        //width: unquote("calc(#{$nav-pf-vertical-collapsed-width} + (#{$nav-pf-vertical-width} * 2))");		// Changes made by C2C CloudBrain Team
+        &.nav-pf-vertical-with-badges {
+          //width: unquote("calc(#{$nav-pf-vertical-collapsed-width} + (#{$nav-pf-vertical-badges-width} * 2))");		// Changes made by C2C CloudBrain Team
+        }
+      }
+    }
+    &.hover-tertiary-nav-pf {
+      //width: unquote("calc(#{$nav-pf-vertical-width} * 3)");		// Changes made by C2C CloudBrain Team
+      &.nav-pf-vertical-with-badges {
+        //width: unquote("calc(#{$nav-pf-vertical-badges-width} * 3)");		// Changes made by C2C CloudBrain Team
+      }
+    }
+    .secondary-nav-item-pf.active {
+      .nav-pf-secondary-nav {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+  }
+}
+.nav-item-pf-header {
+  color: $nav-pf-vertical-secondary-color;
+  font-size: ($font-size-base + 4);
+  margin: $nav-pf-vertical-secondary-header-margin;
+  > a {
+    cursor: pointer;
+    margin-right: 7px;
+    &:hover,
+    &:focus {
+      color: $link-color;
+      text-decoration: none;
+    }
+  }
+}
+.nav-pf-vertical.collapsed { // Collapsed Primary Menu state
+  //width: $nav-pf-vertical-collapsed-width;		// Changes made by C2C CloudBrain Team
+  .list-group-item { // Show only the icons
+    > a {
+      width: $nav-pf-vertical-collapsed-width;
+      > .list-group-item-value {
+        display: none;
+      }
+      > .badge-container-pf {
+        display: none;
+      }
+    }
+    &.secondary-nav-item-pf { // Adjust widths
+      &.active > a,
+      > a {
+        //width: $nav-pf-vertical-collapsed-width;		// Changes made by C2C CloudBrain Team
+        &:after {
+          right: 10px;
+        }
+      }
+      &.active,
+      &:hover {
+        > a {
+         // width: ($nav-pf-vertical-collapsed-width + 2);		// Changes made by C2C CloudBrain Team
+          &:after {
+            right: 11px;
+          }
+        }
+      }
+    }
+  }
+}
+.nav-pf-secondary-nav {
+  background: $nav-pf-vertical-secondary-bg-color;
+  border: 1px solid $nav-pf-vertical-border-color;
+  border-bottom: none;
+  border-top: none;
+  bottom: 0;
+  display: block;
+  left: $nav-pf-vertical-width;
+  //opacity: 0;						// Changes made by C2C CloudBrain Team
+  overflow-x: hidden;
+  overflow-y: auto;
+  //position: fixed;				// Changes made by C2C CloudBrain Team
+  top: $navbar-pf-height;
+  //visibility: hidden;				// Changes made by C2C CloudBrain Team
+  //width: $nav-pf-vertical-width;	// Changes made by C2C CloudBrain Team
+  z-index: $zindex-navbar-fixed;
+  
+												// Changes made by C2C CloudBrain Team, changes start
+								
+  //.secondary-nav-item-pf.active & {  // Show secondary menu if active and either is collapsed
+    //.collapsed-secondary-nav-pf & {
+      //left: 0;
+      //opacity: 1;
+      //visibility: visible;
+      //z-index: ($zindex-navbar-fixed + 2);
+    //}
+    //.collapsed-tertiary-nav-pf & {
+      //left: 0;
+      //opacity: 1;
+      //visibility: visible;
+    //}
+  //}
+  //.secondary-nav-item-pf.is-hover & { // Show secondary menu if hovering
+    //.hover-secondary-nav-pf & {
+      //opacity: 1;
+      //visibility: visible;
+    //}
+  //}
+  
+												// Changes made by C2C CloudBrain Team, changes end
+  .ie9.layout-pf-fixed & {
+    box-sizing: content-box; // IE9 incorrectly sizes the width if using padding-box
+  }
+  .layout-pf-fixed-with-footer & {
+    bottom: $footer-pf-height;
+  }
+  .list-group-item {
+    border: none;
+    padding: $nav-pf-vertical-secondary-item-padding;
+    width: $nav-pf-vertical-width;
+    > a {
+													// Changes made by C2C CloudBrain Team
+													// Changes made by C2C CloudBrain Team
+													// Changes made by C2C CloudBrain Team
+													// Changes made by C2C CloudBrain Team
+      height: inherit;
+      padding: 17px 20px 17px 25px;					// Changes made by C2C CloudBrain Team
+													// Changes made by C2C CloudBrain Team
+													// Changes made by C2C CloudBrain Team
+    }
+    &.active > a:before {
+      display: none;
+    }
+    &.active > a,
+    &:hover > a,
+    & > a:focus {
+      background-color: $nav-pf-vertical-secondary-active-bg-color;
+      color: $nav-pf-vertical-secondary-active-color;
+    }
+    .badge-container-pf {
+      top: 5px;
+      .badge {
+        background: $nav-pf-vertical-secondary-badge-bg-color;
+        color: $nav-pf-vertical-badge-color;
+      }
+    }
+    .list-group-item-value {
+      padding-left: 5px;
+    }
+    &.tertiary-nav-item-pf { // Secondary menu items with tertiary sub menus
+      > a {
+        cursor: pointer;			// Changes made by C2C CloudBrain Team
+        &:after {
+          //color: $nav-pf-vertical-secondary-indicator-color;		// Changes made by C2C CloudBrain Team
+          content: $fa-var-angle-right;
+          display: block;
+          font-family: "FontAwesome";
+          line-height: 20px;
+          padding: $nav-pf-vertical-tertiary-indicator-padding;
+          position: absolute;
+          right: 20px;
+          top: 19px;						// Changes made by C2C CloudBrain Team
+          font-size:17px;					// Changes made by C2C CloudBrain Team
+        }
+        // If flex box is supported add some padding to account for the submenu indicator
+        .list-group-item-value {
+          @supports (display: flex) {
+            padding-right: 35px;
+          }
+        }
+      }
+      &.active,
+      &:hover {
+        > a {
+          width: unquote("calc(#{$nav-pf-vertical-width} - 19px)");
+          z-index: ($zindex-navbar-fixed + 3);
+          &:after {
+            right: 21px;
+          }
+        }
+      }
+    }
+  }
+  .nav-pf-vertical-with-badges & {
+    left: $nav-pf-vertical-badges-width;
+    width: $nav-pf-vertical-badges-width;
+    .list-group-item {
+      width: $nav-pf-vertical-badges-width;
+      > a {
+        width: unquote("calc(#{$nav-pf-vertical-badges-width} - 20px)");
+      }
+      &.tertiary-nav-item-pf { // Secondary menu items with tertiary sub menus
+        &.active,
+        &:hover {
+          > a {
+            width: unquote("calc(#{$nav-pf-vertical-badges-width} - 19px)");
+          }
+        }
+      }
+    }
+  }
+}
+.nav-pf-tertiary-nav {
+  background: $nav-pf-vertical-tertiary-bg-color;
+  border: 1px solid $nav-pf-vertical-border-color;
+  border-bottom: none;
+  border-top: none;
+  bottom: 0;
+  display: block;
+  //left: unquote("calc(#{$nav-pf-vertical-width} * 2)");		// Changes made by C2C CloudBrain Team
+  //opacity: 0;					// Changes made by C2C CloudBrain Team
+  overflow-x: hidden;
+  overflow-y: auto;
+  //position: fixed;			// Changes made by C2C CloudBrain Team
+  top: $navbar-pf-height;
+  //visibility: hidden;			// Changes made by C2C CloudBrain Team
+  //width: $nav-pf-vertical-width;			// Changes made by C2C CloudBrain Team
+  z-index: $zindex-navbar-fixed;
+  .nav-pf-vertical-with-badges & {
+    //left: $nav-pf-vertical-badges-width;			// Changes made by C2C CloudBrain Team
+    //width: $nav-pf-vertical-badges-width;			// Changes made by C2C CloudBrain Team
+    .show-mobile-nav {
+      left: 0;
+    }
+  }
+  
+														// Changes made by C2C CloudBrain Team, Changes start
+  
+  //.tertiary-nav-item-pf.active & {  // Show tertiary menu if active and collapsed
+    //.collapsed-tertiary-nav-pf & {
+      //left: 0;
+      //opacity: 1;
+      //visibility: visible;
+      //z-index: ($zindex-navbar-fixed + 3);
+   //}
+  //}
+  //.tertiary-nav-item-pf.is-hover & { // Show tertiary menu if hovering
+    //.hover-tertiary-nav-pf & {
+      //opacity: 1;
+      //visibility: visible;
+      //.collapsed.collapsed-tertiary-nav-pf & {
+       // left: 0;
+     // }
+    //}
+  //}
+  
+														// Changes made by C2C CloudBrain Team, changes end
+  
+  .ie9.layout-pf-fixed & {
+    box-sizing: content-box; // IE9 incorrectly sizes the width if using padding-box
+  }
+  .layout-pf-fixed-with-footer & {
+    bottom: $footer-pf-height;
+  }
+  .nav-item-pf-header {
+    color: $nav-pf-vertical-tertiary-color;
+    margin: $nav-pf-vertical-tertiary-header-margin;
+  }
+  h5 {
+    color: $nav-pf-vertical-tertiary-color;
+    margin: $nav-pf-vertical-tertiary-list-header-margin;
+  }
+  .list-group-item {
+    border: none;
+    padding: $nav-pf-vertical-tertiary-item-padding;
+    > a {
+      background-color: transparent;
+      color: #3e466a;				// Changes made by C2C CloudBrain Team
+      font-size: 14px;				// Changes made by C2C CloudBrain Team
+      font-weight: 600;				// Changes made by C2C CloudBrain Team
+      height: inherit;
+      margin: $nav-pf-vertical-tertiary-link-margin;
+      padding: 17px 20px 17px 25px;			// Changes made by C2C CloudBrain Team
+    }
+    &.active > a:before {
+      display: none;
+    }
+    &.active > a,
+    &:hover > a,
+    & > a:focus {
+      background-color: $nav-pf-vertical-tertiary-active-bg-color;
+      color: $nav-pf-vertical-tertiary-active-color;
+    }
+    .badge-container-pf {
+      top: 5px;
+      .badge {
+        background: $nav-pf-vertical-tertiary-badge-bg-color;
+        color: $nav-pf-vertical-tertiary-badge-color;
+      }
+    }
+    .list-group-item-value {
+      padding-left: 5px;
+    }
+  }
+}
+.collapsed {
+  .nav-pf-secondary-nav { // Adjust left placement
+    left: $nav-pf-vertical-collapsed-width;
+    .list-group-item {
+      > a {
+        width: unquote("calc(#{$nav-pf-vertical-width} - 20px)");
+        > .list-group-item-value { // Continue to show labels for secondary menu items
+          display: inline-block;
+        }
+        > .badge-container-pf {
+          display: inline-block;
+        }
+      }
+    }
+  }
+  .nav-pf-tertiary-nav { // Adjust left placement
+    //  left: unquote("calc(#{$nav-pf-vertical-collapsed-width} + #{$nav-pf-vertical-width})");		// Changes made by C2C CloudBrain Team
+    .list-group-item {
+      > a {
+        width: unquote("calc(#{$nav-pf-vertical-width} - 20px)");
+        > .list-group-item-value { // Continue to show labels for tertiary menu items
+          display: inline-block;
+        }
+        > .badge-container-pf {
+          display: inline-block;
+        }
+      }
+    }
+  }
+  &.collapsed-secondary-nav-pf,
+  &.collapsed-tertiary-nav-pf {
+    width: $nav-pf-vertical-width;
+    .secondary-nav-item-pf {
+      &:hover {
+        > a {
+          z-index: $zindex-navbar-fixed;
+        }
+      }
+    }
+    .nav-pf-secondary-nav {
+      left: 0;
+    }
+  }
+  &.collapsed-secondary-nav-pf {
+    .nav-pf-tertiary-nav {
+      //left: $nav-pf-vertical-width;			// Changes made by C2C CloudBrain Team
+    }
+  }
+  &.collapsed-tertiary-nav-pf {
+    .nav-pf-tertiary-nav {
+      //left: 0;					// Changes made by C2C CloudBrain Team
+    }
+  }
+  &.hover-secondary-nav-pf {
+    //width: unquote("calc(#{$nav-pf-vertical-collapsed-width} + #{$nav-pf-vertical-width})");			// Changes made by C2C CloudBrain Team
+
+    &.collapsed-secondary-nav-pf,
+    &.collapsed-tertiary-nav-pf {
+      width: $nav-pf-vertical-width;
+    }
+  }
+  &.hover-tertiary-nav-pf {
+    width: unquote("calc(#{$nav-pf-vertical-collapsed-width} + (#{$nav-pf-vertical-width} * 2))");
+    &.collapsed-secondary-nav-pf {
+      width: unquote("calc(#{$nav-pf-vertical-width} * 2)");
+    }
+    &.collapsed-tertiary-nav-pf {
+      width: $nav-pf-vertical-width;
+    }
+  }
+  &.nav-pf-vertical-with-badges {
+    .nav-pf-secondary-nav {
+      .list-group-item {
+        > a {
+          width: unquote("calc(#{$nav-pf-vertical-badges-width} - 20px)");
+        }
+      }
+    }
+    .nav-pf-tertiary-nav {
+      //left: unquote("calc(#{$nav-pf-vertical-collapsed-width} + #{$nav-pf-vertical-badges-width})");			// Changes made by C2C CloudBrain Team
+      .list-group-item {
+        > a {
+          width: unquote("calc(#{$nav-pf-vertical-badges-width} - 20px)");
+        }
+      }
+    }
+    &.collapsed-secondary-nav-pf,
+    &.collapsed-tertiary-nav-pf {
+      width: $nav-pf-vertical-badges-width;
+    }
+    &.collapsed-secondary-nav-pf {
+      .nav-pf-tertiary-nav {
+        //left: $nav-pf-vertical-badges-width;			// Changes made by C2C CloudBrain Team
+      }
+    }
+    &.hover-secondary-nav-pf {
+     // width: unquote("calc(#{$nav-pf-vertical-collapsed-width} + #{$nav-pf-vertical-badges-width})");			// Changes made by C2C CloudBrain Team
+      &.collapsed-secondary-nav-pf,
+      &.collapsed-tertiary-nav-pf {
+        //width: $nav-pf-vertical-badges-width;			// Changes made by C2C CloudBrain Team
+      }
+    }
+    &.hover-tertiary-nav-pf {
+     // width: unquote("calc(#{$nav-pf-vertical-collapsed-width} + (#{$nav-pf-vertical-width} * 2))");			// Changes made by C2C CloudBrain Team
+      &.collapsed-secondary-nav-pf {
+       // width: unquote("calc(#{$nav-pf-vertical-width} * 2)");			// Changes made by C2C CloudBrain Team
+      }
+      &.collapsed-tertiary-nav-pf {
+        //      width: $nav-pf-vertical-width;			// Changes made by C2C CloudBrain Team
+      }
+    }
+  }
+}
+.secondary-collapse-toggle-pf {
+  display: none;
+  font-family: $icon-font-name-fa;
+  font-size: inherit;
+  opacity: 0;
+  pointer-events: none;
+  -webkit-font-smoothing: antialiased;
+  &:before {
+    content: $fa-var-arrow-circle-o-left;
+  }
+  &.collapsed {
+    &:before {
+      content: $fa-var-arrow-circle-o-right;
+    }
+  }
+}
+.tertiary-collapse-toggle-pf {
+  display: none;
+  font-family: $icon-font-name-fa;
+  font-size: inherit;
+  opacity: 0;
+  pointer-events: none;
+  -webkit-font-smoothing: antialiased;
+  &:before {
+    content: $fa-var-arrow-circle-o-left;
+  }
+  &.collapsed {
+    &:before {
+      content: $fa-var-arrow-circle-o-right;
+    }
+  }
+}
+.nav-pf-vertical-collapsible-menus {
+  .secondary-collapse-toggle-pf {
+    display: inline-block;
+  }
+  .secondary-nav-item-pf.active {
+    .secondary-collapse-toggle-pf {
+      opacity: 1;
+      pointer-events: all;
+    }
+  }
+  .tertiary-collapse-toggle-pf {
+    display: inline-block;
+  }
+  .tertiary-nav-item-pf.active {
+    .tertiary-collapse-toggle-pf {
+      opacity: 1;
+      pointer-events: all;
+    }
+  }
+}
+.show-mobile-nav {
+  .secondary-collapse-toggle-pf {
+    display: inline-block;
+    opacity: 1;
+    pointer-events: all;
+    &:before {
+      content: $fa-var-arrow-circle-o-left;
+    }
+  }
+  .tertiary-collapse-toggle-pf {
+    display: inline-block;
+    opacity: 1;
+    pointer-events: all;
+    &:before {
+      content: $fa-var-arrow-circle-o-left;
+    }
+  }
+}
+.force-hide-secondary-nav-pf { // Used to temporarily hide sub-menus on an unpin event
+  .nav-pf-secondary-nav {
+    display: none !important;
+  }
+  .nav-pf-tertiary-nav {
+    display: none !important;
+  }
+}
+
+															// Changes made by C2C CloudBrain Team below this comment
+
+//.nav-pf-vertical.transitions {
+//  transition: width $nav-pf-menu-transition-period;
+//  .nav-pf-secondary-nav {
+//    transition: visibility $nav-pf-menu-transition-period, opacity $nav-pf-menu-transition-period linear;
+//  }
+//  .nav-pf-tertiary-nav {
+//    transition: visibility $nav-pf-menu-transition-period, opacity $nav-pf-menu-transition-period linear;
+//  }
+//}
+
+.BillingForm select{
+  width:100%;
+}
+.tab-content {
+  margin-top:0!important;
+  background: white;
+  float: left;
+  border: 1px solid #f1f1f1;
+  width:100%;
+  box-shadow:0 1px 15px 1px rgba(62,57,107,.07);
+  padding-bottom:17px;
+}
+.BillingForm{
+  padding-top:31px;
+}
+.BillingDiv h1{
+  padding-bottom:5px;
+  border-bottom:1px solid #eaeaea;
+}
+.BillingForm .control-label{
+  text-align:left!important;
+}
+.ExtraTopPading{
+  padding-top:31px;
+}
+.tab-content > .tab-pane{
+  padding-left:14px;
+}
+.AnnualBudget {
+  padding: 0px 17px!important;
+  color: white;
+  background: #89c100;
+  border:1px solid #6c9800;
+  float:right;
+  margin-left:5px;
+}
+.labelAnnualBudget {
+  display: inline-block;
+  max-width: 100%;
+  font-weight: normal!important;
+  margin-bottom: 0px;
+  font-size: 12px;
+  color:white;
+}
+// .tab-pane canvas{
+//   padding-top:24px;
+//   width: 100%!important;
+//   height: 100% !important;
+// }
+//amit css added on 13/01/2019 for rebranding purpose
+.navbar-pf-vertical{
+  background:#5874c8!important;
+  box-shadow:1px 0 30px rgba(0,0,0,.1);
+}
+.nav-pf-vertical{
+  background:#5874c8!important;
+  // border-right:1px solid #5874c8!important;
+  // box-shadow:1px 0 30px rgba(0,0,0,.1)!important;
+  width: 225px
+}
+// .nav-pf-vertical .list-group-item > a .fa,
+// .nav-pf-vertical .list-group-item > a .pficon{
+//   background: transparent!important;
+//     color: #fff!important;
+// }
+// .nav-pf-vertical .list-group-item .list-group-item-value {
+//     color: white
+//   }
+.secondary-nav-item-pf > a:after {
+  // color:white!important;
+  // font-size:17px!important;
+  display: none;
+ }
+// .nav-pf-secondary-nav .list-group-item.tertiary-nav-item-pf > a:after{
+//   color:white!important;
+// }
+
+.nav-pf-secondary-nav{
+  background: #6b85d4!important;
+}
+.nav-pf-tertiary-nav{
+  background: #6b85d4!important;
+  // border: 1px solid #5874c8!important;
+}
+.nav-pf-secondary-nav .list-group-item > a{
+  // background-color: #6b85d4!important;
+  width: 100%;
+}
+.list-group-item a:hover{
+  color:white!important;
+}
+.nav-pf-vertical .list-group-item .list-group-item-value{
+  text-overflow:initial!important;
+}
+.nav-item-pf-header{
+  border-bottom:1px solid #809bed!important;
+  margin:18px 20px 10px 4px!important;
+}
+.nav-pf-tertiary-nav .nav-item-pf-header{
+  margin:18px 20px 10px 4px!important;
+}
+.nav-pf-tertiary-nav .list-group-item > a{
+  margin:0 20px 0 0px!important;
+}
+.nav-pf-secondary-nav .list-group-item > a{
+  margin-left:0px!important
+}
+// .secondary-collapse-toggle-pf{
+//   color:white!important;
+// }
+.navbar-pf-vertical .navbar-toggle{
+  background:transparent!important;
+}
+.navbar-pf-vertical .navbar-toggle .icon-bar{
+  background:white!important;
+}
+// .secondary-nav-item-pf > a:after{
+//   line-height:42px!important;
+// }
+.nav-pf-vertical {
+  overflow:hidden!important
+}
+.nav-pf-vertical:hover
+{
+  overflow:auto!important;
+}
+.nav-pf-vertical .list-group-item{
+  border-color:#5874c8!important;
+}
+//scrollbar
+.nav-pf-vertical::-webkit-scrollbar {
+  /* width: 6px; */
+  /* background-color: #374b86; */
+  /* border-radius: 100px; */
+}
+.nav-pf-vertical::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+  background-color: #F5F5F5;
+  /* border-radius: 100px; */
+  overflow-y: auto;
+}
+.nav-pf-vertical::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+}
+.nav-pf-vertical::-webkit-scrollbar-thumb {
+  height: 6px;
+  /* background-color: #000000; */
+  background-color: #ccc;
+  border-radius: 10px;
+  /* overflow-y: auto; */
+}
+.nav-pf-vertical::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  border-radius: 100px;
+}
+.nav-pf-vertical::-webkit-scrollbar-track {
+  height: 6px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  /* background-color: #F5F5F5; */
+  border-radius: 100px;
+  /* overflow-y: auto; */
+}
+.nav-pf-vertical.collapsed .list-group-item.secondary-nav-item-pf.active > a:after, .nav-pf-vertical.collapsed .list-group-item.secondary-nav-item-pf:hover > a:after {
+  right: 6px!important;
+}
+.nav-pf-vertical.collapsed .list-group-item.secondary-nav-item-pf.active > a:after, .nav-pf-vertical.collapsed .list-group-item.secondary-nav-item-pf > a:after{
+  right:4px!important;
+}
+.nav-pf-secondary-nav .list-group-item.tertiary-nav-item-pf.active > a, .nav-pf-secondary-nav .list-group-item.tertiary-nav-item-pf:hover > a {
+  width: 100%!important;
+  z-index: 1033;
+}
+@media only screen
+and (min-width : 1224px) {
+  .TargetDropdown {
+    width: 137px!important;
+  }
+  .SelectCustomDropdown {
+    width: 200px!important;
+  }
+}
+/* Large screens ----------- */
+@media only screen  and (min-width : 1824px) {
+  .TargetDropdown {
+    width: 275px!important;
+  }
+}
+@media (min-width: 1281px) {
+  .SelectCustomDropdown {
+    width: 318px !important;
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+
+  //CSS Updated by AMIT SHARMA for left navigation menu
+}
+// .list-group li{
+//   transition-duration: 0.5s;
+// }
+//     .list-group li div {
+//       display: none;
+//       opacity: 0;
+//       transition: all 0.5s ease;
+//       visibility: hidden;
+//     }
+//     .list-group li:hover > div,
+//     .list-group li div:hover {
+//   visibility: visible;
+//   opacity: 1;
+//   display: block;
+// }
+.list-group-item.secondary-nav-item-pf  > a:after {
+  content: $fa-var-angle-right;
+  display: block;
+  font-family: "FontAwesome";
+  line-height: 20px;
+  padding: 0;
+  position: absolute;
+  right: 20px;
+  top: 18px;
+}
+.nav-pf-vertical {
+  background: #ffffff !important;
+}
+/* line 878, /root/manageiq-ui-classic/app/assets/stylesheets/main.scss */
+.nav-pf-vertical .list-group-item {
+  border-color: #ffffff !important;
+}
+.nav-pf-secondary-nav {
+  background: #EAEEF7 !important;
+}
+.nav-pf-tertiary-nav {
+  background: #EAEEF7 !important;
+}
+.list-group .list-group-item:first-child {
+  border-top: 0;
+}
+.list-group > li.dropdown {
+  position: relative;
+}
+.nav-pf-vertical .list-group-item {
+  /* border-color: #ffffff !important; */
+}
+.list-group > li div {
+  padding: 4px 0px 0px 0px;
+  border: none;
+}
+.dashboardheading {
+  color: #3c446b;
+  font-weight: 400;
+  margin-bottom: 25px;
+  font-size:22px;
+}
+.miq-body {
+  background: #fff !important;
+}
+.toolbar-pf {
+  background: #fff !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding-top: 10px;
+}
+.nav > li > a {
+  padding: 0;
+}
+.nav-tabs > li > a {
+  border-bottom: 2px solid #f0f0f0;
+  color: #9b9b9b;
+  font-size: 16px;
+  font-weight: 600;
+  color: #9b9b9b;
+  padding-bottom: 9px;
+  padding-top: 0;
+  margin-right: 16px;
+}
+.nav-tabs {
+  font-size: 14px;
+}
+.nav-tabs > li > a:active, .nav-tabs > li > a:focus, .nav-tabs > li > a:hover {
+  border-top: 1px solid white;
+  border-left: 1px solid white;
+  border-right: 1px solid white;
+}
+.nav-tabs > li > a {
+  border-bottom: 2px solid #f0f0f0;
+  color: #9b9b9b;
+  font-size: 16px;
+  font-weight: 600;
+  color: #9b9b9b;
+  padding-bottom: 9px;
+  padding-top: 0;
+  margin-right: 16px;
+}
+.fonticon {
+  font-size: 24px !important;
+  line-height: 1.4;
+}
+.AddDropdown {
+  background: #4175ff;
+  padding: 8px 18px !important;
+  color: white !important;
+  border: none;
+  border-radius: 30px !important;
+}
+.portlet-body{
+  display:flex;
+}
+.portlet-body div{
+  margin:0 auto;
+}
